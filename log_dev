@@ -1,0 +1,811 @@
+commit cb15aa60cde9abe38dd24ff36932cfb8b348bde5
+Author: Mouhamed Samb (machine) <mouhamed.samb@etud.u-pem.fr>
+Date:   Tue Jan 3 12:47:31 2023 +0100
+
+     commit
+
+diff --git a/Infiltration b/Infiltration
+index 737fb9b..b6512ff 100755
+Binary files a/Infiltration and b/Infiltration differ
+diff --git a/include/gardien.h b/include/gardien.h
+index f97c187..5763c1c 100644
+--- a/include/gardien.h
++++ b/include/gardien.h
+@@ -11,4 +11,5 @@ typedef struct gardien{
+ }Gardien;
+ 
+ 
++
+ #endif
+diff --git a/include/personnage.h b/include/personnage.h
+index e3a8e7f..376c008 100644
+--- a/include/personnage.h
++++ b/include/personnage.h
+@@ -3,9 +3,13 @@
+ 
+ 
+ #include "coordonnee.h"
++#include "terrain.h"
+ 
+ typedef struct personnage{
+   Coord coord;
+   int mana;
+   int vitesse;
+-}Personnage;
+\ No newline at end of file
++}Personnage;
++
++void Move(Terrain *terrain, Personnage perso ,int x ,int y,int vx, int vy);
++#endif
+diff --git a/src/personnage.c b/src/personnage.c
+index e69de29..49e4c85 100644
+--- a/src/personnage.c
++++ b/src/personnage.c
+@@ -0,0 +1,7 @@
++#include "personnage.h"
++#include <stdlib.h>
++#include <stdio.h>
++
++void Move(Terrain *terrain,Personnage perso,int x ,int y,int vx, int vy){
++/* à faire aprés */
++}
+diff --git a/src/personnage.o b/src/personnage.o
+index b4bb7a4..cc1ae56 100644
+Binary files a/src/personnage.o and b/src/personnage.o differ
+
+commit 863120e7ab9635f743897a161e115cd18471f0ac
+Author: Mouhamed Samb (machine) <mouhamed.samb@etud.u-pem.fr>
+Date:   Tue Jan 3 12:30:37 2023 +0100
+
+    third commit
+
+diff --git a/Infiltration b/Infiltration
+index 402f7e4..737fb9b 100755
+Binary files a/Infiltration and b/Infiltration differ
+diff --git a/src/collision.c b/src/collision.c
+index 2115884..e77bb34 100644
+--- a/src/collision.c
++++ b/src/collision.c
+@@ -25,7 +25,7 @@ int verif_case_traverse(Coord perso, Coord gardien, Terrain *t, int case_x,int c
+     if ((t->terrain)[case_x][case_y].type == WALL) {
+       return 0;
+     }
+-    else if ((t->taille.x >= perso.x && t->taille.x <= gardien.x) && (t->taille.y >= perso.y && t->taille.y <= gardien.y)) {
++    else if ((case_x >= perso.x && case_x <= gardien.x) && (case_y >= perso.y && case_y <= gardien.y)) {
+       return 1;
+     }
+     return 0;
+diff --git a/src/collision.o b/src/collision.o
+index 540d141..bb970f7 100644
+Binary files a/src/collision.o and b/src/collision.o differ
+
+commit 103f085386e7fa422e1ffe0a3d6f6d723f230bd4
+Author: Mouhamed Samb (machine) <mouhamed.samb@etud.u-pem.fr>
+Date:   Tue Jan 3 12:14:34 2023 +0100
+
+    second commit
+
+diff --git a/Infiltration b/Infiltration
+index ddae518..402f7e4 100755
+Binary files a/Infiltration and b/Infiltration differ
+diff --git a/include/collision.h b/include/collision.h
+index e69de29..fc59fa2 100644
+--- a/include/collision.h
++++ b/include/collision.h
+@@ -0,0 +1,10 @@
++#ifndef __COLLISION__
++#define __COLLISION__
++
++#include "terrain.h"
++
++
++Coord Intersection(Coord perso, Coord gardien,int a);
++
++int verif_case_traverse(Coord perso, Coord gardien,Terrain *t,int case_x,int case_y);
++#endif
+diff --git a/include/gardien.h b/include/gardien.h
+index 5ed8b47..f97c187 100644
+--- a/include/gardien.h
++++ b/include/gardien.h
+@@ -9,4 +9,6 @@ typedef struct gardien{
+   int mode;
+   int vitesse;
+ }Gardien;
++
++
+ #endif
+diff --git a/src/collision.c b/src/collision.c
+index e69de29..2115884 100644
+--- a/src/collision.c
++++ b/src/collision.c
+@@ -0,0 +1,32 @@
++#include "collision.h"
++#include <stdlib.h>
++#include <stdio.h>
++
++
++Coord Intersection(Coord perso, Coord gardien,int a){
++  Coord Alpha ;
++  Alpha.x = 0;
++  Alpha.y = 0;
++  int pa,ya;
++
++  pa = ((a - perso.x) / (gardien.x - perso.x));
++  if( pa < 0 && pa > 1 ){
++    return Alpha;
++  }
++  else{
++  ya = (pa * gardien.y) + ((1-pa)*perso.y);
++  Alpha.x = a;
++  Alpha.y= ya;
++  return Alpha;
++  }
++}
++
++int verif_case_traverse(Coord perso, Coord gardien, Terrain *t, int case_x,int case_y){
++    if ((t->terrain)[case_x][case_y].type == WALL) {
++      return 0;
++    }
++    else if ((t->taille.x >= perso.x && t->taille.x <= gardien.x) && (t->taille.y >= perso.y && t->taille.y <= gardien.y)) {
++      return 1;
++    }
++    return 0;
++}
+diff --git a/src/collision.o b/src/collision.o
+index a5690be..540d141 100644
+Binary files a/src/collision.o and b/src/collision.o differ
+diff --git a/src/gardien.c b/src/gardien.c
+index e69de29..15df82c 100644
+--- a/src/gardien.c
++++ b/src/gardien.c
+@@ -0,0 +1,3 @@
++#include "gardien.h"
++#include <stdlib.h>
++#include <stdio.h>
+diff --git a/src/gardien.o b/src/gardien.o
+index 153ecc4..a32dc89 100644
+Binary files a/src/gardien.o and b/src/gardien.o differ
+
+commit 002a10a1608fb2482700fdfe29dc1749c46f75e1
+Author: Mouhamed Samb (machine) <mouhamed.samb@etud.u-pem.fr>
+Date:   Tue Jan 3 10:06:40 2023 +0100
+
+    first commit
+
+diff --git a/Infiltration b/Infiltration
+new file mode 100755
+index 0000000..ddae518
+Binary files /dev/null and b/Infiltration differ
+diff --git a/Makefile b/Makefile
+new file mode 100644
+index 0000000..a23a441
+--- /dev/null
++++ b/Makefile
+@@ -0,0 +1,39 @@
++NAME = Infiltration
++
++SRC = src/
++
++CNT = 	$(SRC)terrain.c\
++		$(SRC)gardien.c\
++		$(SRC)relique.c\
++		$(SRC)personnage.c\
++		$(SRC)collision.c\
++		$(SRC)graphique.c\
++		$(SRC)table.c\
++		$(SRC)main.c\
++
++OBJ = $(CNT:.c=.o)
++
++CFLAGS = -Wall -ansi -lMLV
++				
++LDFLAGS =
++
++HEADER	= include -lMLV
++
++all:$(NAME)
++
++$(NAME): $(OBJ)
++	gcc $(CFLAGS) $^ -o $(NAME) $(LDFLAGS) -I $(HEADER) 
++
++%.o:%.c
++	gcc $(CFLAGS) -o $@ -c $^ -I $(HEADER)
++
++clean:
++	rm -f $(SRC)*.o
++
++mrproper: clean
++	rm -f $(NAME)
++
++install:
++	make
++	make clean
++	mv $(NAME) bin/
+diff --git a/bin/test b/bin/test
+new file mode 100644
+index 0000000..14ee0c3
+Binary files /dev/null and b/bin/test differ
+diff --git a/doc/floor1.png b/doc/floor1.png
+new file mode 100644
+index 0000000..412ade7
+Binary files /dev/null and b/doc/floor1.png differ
+diff --git a/doc/guardian1.png b/doc/guardian1.png
+new file mode 100644
+index 0000000..27ec706
+Binary files /dev/null and b/doc/guardian1.png differ
+diff --git a/doc/hero1.png b/doc/hero1.png
+new file mode 100644
+index 0000000..c15daf7
+Binary files /dev/null and b/doc/hero1.png differ
+diff --git a/doc/relique1.png b/doc/relique1.png
+new file mode 100644
+index 0000000..d6e33f3
+Binary files /dev/null and b/doc/relique1.png differ
+diff --git a/doc/wall1.png b/doc/wall1.png
+new file mode 100644
+index 0000000..d3a41d0
+Binary files /dev/null and b/doc/wall1.png differ
+diff --git a/include/collision.h b/include/collision.h
+new file mode 100644
+index 0000000..e69de29
+diff --git a/include/coordonnee.h b/include/coordonnee.h
+new file mode 100644
+index 0000000..ad9877c
+--- /dev/null
++++ b/include/coordonnee.h
+@@ -0,0 +1,8 @@
++#ifndef __COORDONNEE__
++#define __COORDONNEE__
++
++typedef struct {
++  int x;
++  int y;
++}Coord;
++#endif
+diff --git a/include/gardien.h b/include/gardien.h
+new file mode 100644
+index 0000000..5ed8b47
+--- /dev/null
++++ b/include/gardien.h
+@@ -0,0 +1,12 @@
++#ifndef __GARDIEN__
++#define __GARDIEN__
++
++
++#include "coordonnee.h"
++
++typedef struct gardien{
++  Coord coord;
++  int mode;
++  int vitesse;
++}Gardien;
++#endif
+diff --git a/include/graphique.h b/include/graphique.h
+new file mode 100644
+index 0000000..1e7f662
+--- /dev/null
++++ b/include/graphique.h
+@@ -0,0 +1,11 @@
++#ifndef __GRAPHIQUE__
++#define __GRAPHIQUE__
++#include "terrain.h"
++#include <MLV/MLV_all.h>
++
++
++void affiche_terrain_MLV(Terrain terrain ,MLV_Image *wall,MLV_Image *floor,int size);
++void reset_affiche_MLV(int width,int height);
++
++
++#endif
+\ No newline at end of file
+diff --git a/include/personnage.h b/include/personnage.h
+new file mode 100644
+index 0000000..e3a8e7f
+--- /dev/null
++++ b/include/personnage.h
+@@ -0,0 +1,11 @@
++#ifndef __PERSONNAGE__
++#define __PERSONNAGE__
++
++
++#include "coordonnee.h"
++
++typedef struct personnage{
++  Coord coord;
++  int mana;
++  int vitesse;
++}Personnage;
+\ No newline at end of file
+diff --git a/include/relique.h b/include/relique.h
+new file mode 100644
+index 0000000..b0d7f05
+--- /dev/null
++++ b/include/relique.h
+@@ -0,0 +1,3 @@
++typedef struct relique{
++  int mana;
++}Relique;
+\ No newline at end of file
+diff --git a/include/save.h b/include/save.h
+new file mode 100644
+index 0000000..e28d04e
+--- /dev/null
++++ b/include/save.h
+@@ -0,0 +1,18 @@
++#ifndef __TABLE__
++#define __TABLE__
++
++
++#include <stdio.h>
++#include <string.h>
++
++#define TABLE_LENGTH 10
++#define MAX_STRING_LENGTH 100
++
++
++int init_terrain(Terrain *terrain, Coord taille);
++void affiche_terrain_ASCII(Terrain terrain);
++int max_x_y(Coord espace);
++void generation_terrain(Terrain *terrain,Coord espace,Coord coin_hautgauche,Coord coin_basdroit,int min_side);
++
++
++#endif
+\ No newline at end of file
+diff --git a/include/table.h b/include/table.h
+new file mode 100644
+index 0000000..0ebc628
+--- /dev/null
++++ b/include/table.h
+@@ -0,0 +1,16 @@
++#ifndef __TABLE__
++#define __TABLE__
++
++
++#include <stdio.h>
++#include <string.h>
++
++#define TABLE_LENGTH 10
++#define TABLE_MAX_STRING_LENGTH 100
++
++void save_table_to_file(char table[TABLE_LENGTH][TABLE_MAX_STRING_LENGTH], int scores[TABLE_LENGTH]);
++void load_table_from_file(char table[TABLE_LENGTH][TABLE_MAX_STRING_LENGTH], int scores[TABLE_LENGTH], int *length);
++void print_table(char table[TABLE_LENGTH][TABLE_MAX_STRING_LENGTH], int scores[TABLE_LENGTH],int length) ;
++void add_to_table(char table[TABLE_LENGTH][TABLE_MAX_STRING_LENGTH], int scores[TABLE_LENGTH], int *length, char *string, int score);
++
++#endif
+\ No newline at end of file
+diff --git a/include/terrain.h b/include/terrain.h
+new file mode 100644
+index 0000000..5689686
+--- /dev/null
++++ b/include/terrain.h
+@@ -0,0 +1,37 @@
++#ifndef __TERRAIN__
++#define __TERRAIN__
++
++
++#include "gardien.h"
++#include "relique.h"
++#include "coordonnee.h"
++
++
++
++
++
++typedef enum {
++  WALL, GUARDIAN ,FLOOR ,RELIQUE  
++} Casetype;
++
++typedef struct{
++  Casetype type;
++  int personnage;
++  union{
++    Gardien gardien;
++    Relique relique;
++  };
++}Case ,* Cases,**Board;
++
++typedef struct terrain{
++  Board terrain ;
++  Coord taille;
++}Terrain;
++
++int init_terrain(Terrain *terrain, Coord taille);
++void affiche_terrain_ASCII(Terrain terrain);
++int max_x_y(Coord espace);
++void generation_terrain(Terrain *terrain,Coord espace,Coord coin_hautgauche,Coord coin_basdroit,int min_side);
++
++
++#endif
+\ No newline at end of file
+diff --git a/src/collision.c b/src/collision.c
+new file mode 100644
+index 0000000..e69de29
+diff --git a/src/collision.o b/src/collision.o
+new file mode 100644
+index 0000000..a5690be
+Binary files /dev/null and b/src/collision.o differ
+diff --git a/src/gardien.c b/src/gardien.c
+new file mode 100644
+index 0000000..e69de29
+diff --git a/src/gardien.o b/src/gardien.o
+new file mode 100644
+index 0000000..153ecc4
+Binary files /dev/null and b/src/gardien.o differ
+diff --git a/src/graphique.c b/src/graphique.c
+new file mode 100644
+index 0000000..e5459fe
+--- /dev/null
++++ b/src/graphique.c
+@@ -0,0 +1,28 @@
++#include "graphique.h"
++#include <MLV/MLV_all.h>
++
++
++void affiche_terrain_MLV(Terrain terrain ,MLV_Image *wall,MLV_Image *floor,int size){
++   int i, y;
++   for (i = 0; i < terrain.taille.y; i++){
++      for (y = 0; y < terrain.taille.x; y++){
++         if (terrain.terrain[i][y].personnage) {
++            MLV_draw_filled_rectangle(size*i,size*y,15,15,MLV_COLOR_GREEN);break;
++            continue;
++         }
++         switch(terrain.terrain[i][y].type){
++            case WALL:  MLV_draw_image(wall,size*i,size*y);break;
++            case FLOOR: MLV_draw_image(floor,size*i,size*y);break;
++            case GUARDIAN: MLV_draw_image(floor,size*i,size*y);break;
++            case RELIQUE: MLV_draw_image(floor,size*i,size*y);break;
++            default: MLV_draw_filled_rectangle(size*i,size*y,15,15,MLV_COLOR_RED);break;
++         }
++      }
++      printf("\n");
++   }
++}
++
++void reset_affiche_MLV(int width,int height){
++   MLV_clear_window(MLV_COLOR_BLACK);
++   MLV_draw_filled_rectangle(0,0,width,height,MLV_COLOR_BLACK);
++}
+\ No newline at end of file
+diff --git a/src/graphique.o b/src/graphique.o
+new file mode 100644
+index 0000000..0381fed
+Binary files /dev/null and b/src/graphique.o differ
+diff --git a/src/main.c b/src/main.c
+new file mode 100644
+index 0000000..b969b94
+--- /dev/null
++++ b/src/main.c
+@@ -0,0 +1,72 @@
++#include "terrain.h"
++#include "table.h"
++#include "graphique.h"
++#include <MLV/MLV_all.h>
++
++#define LENGTHT 60
++#define WIDTHT 45
++#define HEIGHTG 1200
++#define WIDTHG 1200
++
++int main(int argc, char const *argv[])
++{
++	Coord coord;
++	Terrain terrain;
++	char table[TABLE_LENGTH][TABLE_MAX_STRING_LENGTH];
++	char table2[TABLE_LENGTH][TABLE_MAX_STRING_LENGTH];
++	int scores[TABLE_LENGTH];
++	int table_lengh = 0;
++	coord.y = LENGTHT;
++	coord.x = WIDTHT;
++
++
++	int width=WIDTHG,height=HEIGHTG;
++
++
++	MLV_create_window("Infiltration","Infiltration",width,height);
++   	MLV_change_window_size( width, height );
++   	int x,y;
++    int mlv_taille_image = 15;
++    MLV_Keyboard_button touche;
++    MLV_Image *wall,*floor,*guardian,*relique,*hero;
++
++    wall = MLV_load_image("doc/wall1.png");
++    floor = MLV_load_image("doc/floor1.png");
++    guardian = MLV_load_image("doc/guardian1.png");
++    relique = MLV_load_image("doc/relique1.png");
++    hero = MLV_load_image("doc/hero1.png");
++	MLV_resize_image_with_proportions(wall,mlv_taille_image,mlv_taille_image);
++	MLV_resize_image_with_proportions(floor,mlv_taille_image,mlv_taille_image);
++	MLV_resize_image_with_proportions(guardian,mlv_taille_image,mlv_taille_image);
++	MLV_resize_image_with_proportions(relique,mlv_taille_image,mlv_taille_image);
++	MLV_resize_image_with_proportions(hero,mlv_taille_image,mlv_taille_image);
++
++
++
++	init_terrain(&terrain,coord);
++	/**
++	affiche_terrain_ASCII(terrain);
++	**/
++	affiche_terrain_MLV(terrain, wall,floor, mlv_taille_image);
++	MLV_actualise_window();
++	load_table_from_file(table,scores,&table_lengh);
++	add_to_table(table,scores,&table_lengh,"aaaa",42);
++	add_to_table(table,scores,&table_lengh,"bbbb",15);
++	add_to_table(table,scores,&table_lengh,"cccc",63);
++	print_table(table,scores,table_lengh);
++	save_table_to_file(table,scores);
++	load_table_from_file(table2,scores,&table_lengh);
++	print_table(table2,scores,table_lengh);
++
++	MLV_wait_keyboard_or_mouse( &touche, NULL, NULL, &x, &y );
++
++
++
++
++
++
++
++	
++	MLV_free_window();
++	return 0;
++}
+\ No newline at end of file
+diff --git a/src/main.o b/src/main.o
+new file mode 100644
+index 0000000..e410355
+Binary files /dev/null and b/src/main.o differ
+diff --git a/src/personnage.c b/src/personnage.c
+new file mode 100644
+index 0000000..e69de29
+diff --git a/src/personnage.o b/src/personnage.o
+new file mode 100644
+index 0000000..b4bb7a4
+Binary files /dev/null and b/src/personnage.o differ
+diff --git a/src/relique.c b/src/relique.c
+new file mode 100644
+index 0000000..e69de29
+diff --git a/src/relique.o b/src/relique.o
+new file mode 100644
+index 0000000..24b60ae
+Binary files /dev/null and b/src/relique.o differ
+diff --git a/src/save.c b/src/save.c
+new file mode 100644
+index 0000000..ae4ed01
+--- /dev/null
++++ b/src/save.c
+@@ -0,0 +1,25 @@
++#include <stdio.h>
++#include <string.h>
++
++#define TABLE_LENGTH 10
++#define MAX_STRING_LENGTH 100
++
++void save_table_to_file(char table[TABLE_LENGTH][MAX_STRING_LENGTH], int scores[TABLE_LENGTH]) {
++  FILE *fp;
++  fp = fopen("test", "wb");
++  for (int i = 0; i < TABLE_LENGTH; i++) {
++    fwrite(table[i], sizeof(char), MAX_STRING_LENGTH, fp);
++    fwrite(&scores[i], sizeof(int), 1, fp);
++  }
++  fclose(fp);
++}
++
++void load_table_from_file(char table[TABLE_LENGTH][MAX_STRING_LENGTH], int scores[TABLE_LENGTH]) {
++  FILE *fp;
++  fp = fopen("test", "rb");
++  for (int i = 0; i < TABLE_LENGTH; i++) {
++    fread(table[i], sizeof(char), MAX_STRING_LENGTH, fp);
++    fread(&scores[i], sizeof(int), 1, fp);
++  }
++  fclose(fp);
++}
+\ No newline at end of file
+diff --git a/src/table.c b/src/table.c
+new file mode 100644
+index 0000000..23929e1
+--- /dev/null
++++ b/src/table.c
+@@ -0,0 +1,71 @@
++#include <stdio.h>
++#include <string.h>
++
++#define TABLE_LENGTH 10
++#define TABLE_MAX_STRING_LENGTH 100
++
++void save_table_to_file(char table[TABLE_LENGTH][TABLE_MAX_STRING_LENGTH], int scores[TABLE_LENGTH]) {
++  FILE *fp;
++  int i;
++  fp = fopen("bin/test", "wb");
++  for (i = 0; i < TABLE_LENGTH; i++) {
++    fwrite(table[i], sizeof(char), TABLE_MAX_STRING_LENGTH, fp);
++    fwrite(&scores[i], sizeof(int), 1, fp);
++  }
++  fclose(fp);
++}
++
++int load_table_from_file(char table[TABLE_LENGTH][TABLE_MAX_STRING_LENGTH], int scores[TABLE_LENGTH], int *length) {
++  FILE *fp;
++  char buffer[TABLE_MAX_STRING_LENGTH];
++
++  fp = fopen("bin/test", "rb");
++  if (fp == NULL) {
++    return 0;
++  }
++
++  *length = 0;
++  while (fread(buffer, TABLE_MAX_STRING_LENGTH, 1, fp) == 1 && *length < TABLE_LENGTH) {
++    strncpy(table[*length], buffer, TABLE_MAX_STRING_LENGTH);
++    if (fread(&scores[*length], sizeof(int), 1, fp) != 1) {
++      break;
++    }
++    if(scores[*length] <= 0 || scores[*length] >= 1000 ){
++      break;
++    }
++    (*length)++;
++  }
++  fclose(fp);
++
++  return 1;
++}
++
++
++void print_table(char table[TABLE_LENGTH][TABLE_MAX_STRING_LENGTH], int scores[TABLE_LENGTH],int length) {
++  int i;
++  for ( i = 0; i < length; i++) {
++    printf("%s %d\n", table[i], scores[i]);
++  }
++}
++
++void add_to_table(char table[TABLE_LENGTH][TABLE_MAX_STRING_LENGTH], int scores[TABLE_LENGTH], int *length, char *string, int score) {
++  int i;
++  if (*length < TABLE_LENGTH || score > scores[*length - 1]) {
++    strncpy(table[*length], string, TABLE_MAX_STRING_LENGTH);
++    scores[*length] = score;
++    (*length)++;
++
++    for (i = *length - 1; i > 0; i--) {
++      if (scores[i] > scores[i - 1]) {
++        int temp = scores[i];
++        scores[i] = scores[i - 1];
++        scores[i - 1] = temp;
++
++        char temp_string[TABLE_MAX_STRING_LENGTH];
++        strncpy(temp_string, table[i], TABLE_MAX_STRING_LENGTH);
++        strncpy(table[i], table[i - 1], TABLE_MAX_STRING_LENGTH);
++        strncpy(table[i - 1], temp_string, TABLE_MAX_STRING_LENGTH);
++      }
++    }
++  }
++}
+\ No newline at end of file
+diff --git a/src/table.o b/src/table.o
+new file mode 100644
+index 0000000..18a1e90
+Binary files /dev/null and b/src/table.o differ
+diff --git a/src/terrain.c b/src/terrain.c
+new file mode 100644
+index 0000000..51b8006
+--- /dev/null
++++ b/src/terrain.c
+@@ -0,0 +1,117 @@
++#include "terrain.h"
++#include <stdlib.h>
++#include <stdio.h>
++#include <time.h>
++
++
++int init_terrain(Terrain *terrain, Coord taille){
++   srand(time(NULL));
++   Board board;
++   Coord espace,coin_hautgauche,coin_basdroit;
++   int i,y;
++   if (!(board = (Board)malloc(sizeof(Case) * taille.y)))
++      return 0;
++   for (i = 0; i < taille.y; i++){
++      if (!(board[i] = (Cases)malloc(sizeof(Case) * taille.x)))
++         return 0;
++   }
++   for (i = 0; i < taille.y; i++){
++      for (y = 0; y < taille.x; y++){
++         if( i == 0 ||i ==taille.y -1)     board[i][y].type = WALL;
++         else if( y == 0 ||y ==taille.x -1)     board[i][y].type = WALL;
++         else  board[i][y].type = FLOOR;
++         board[i][y].personnage = 0;
++      }
++   }
++   terrain->terrain = board;
++   terrain->taille = taille;
++   espace.x = terrain->taille.x -2;
++   espace.y = terrain->taille.y -2;
++   coin_hautgauche.x = 1;
++   coin_hautgauche.y = 1;
++   coin_basdroit.x = terrain->taille.x -1;
++   coin_basdroit.y = terrain->taille.y -1;
++   generation_terrain(terrain,espace,coin_hautgauche,coin_basdroit,9);
++   return 1;
++}
++
++int max_x_y(Coord espace){
++   if(espace.x >espace.y) return espace.x;
++   return espace.y;
++}
++
++void generation_terrain(Terrain *terrain,Coord espace,Coord coin_hautgauche,Coord coin_basdroit,int min_side){
++   int vmax_x_y,mur,i,ouverture;
++   Coord espace1,espace2,coin_basdroit1,coin_basdroit2,coin_hautgauche1,coin_hautgauche2;
++   vmax_x_y = max_x_y(espace);
++   if(vmax_x_y < 2 * min_side + 1){
++      return;
++   }
++   if(vmax_x_y < 4 * min_side){
++      if(rand() % 2 ==1) return;     
++   }
++   if(vmax_x_y == espace.x){
++      mur = (coin_basdroit.x - coin_hautgauche.x) / 2;
++      espace1.x = mur - 1 -coin_basdroit.x;
++      espace2.x = mur - ((coin_basdroit.x - coin_hautgauche.x) % 2 ? 1 : 0) -coin_basdroit.x;
++      espace1.y = espace.y;
++      espace2.y = espace.y;
++      if(max_x_y(espace1) < min_side || max_x_y(espace2) < min_side) return;
++      for(i=coin_hautgauche.y;i<coin_basdroit.y+1;i++) terrain->terrain[i][mur].type = WALL;
++      ouverture = rand() % (coin_basdroit.y -coin_hautgauche.y -3)+coin_hautgauche.y;
++      for(i=ouverture;i<ouverture+3;i++) terrain->terrain[i][mur].type = FLOOR;
++      coin_hautgauche1.x = coin_hautgauche.x;
++      coin_hautgauche1.y = coin_hautgauche.y;
++      coin_hautgauche2.x = mur+1;
++      coin_hautgauche2.y = coin_hautgauche.y;
++      coin_basdroit1.x = mur - 1;
++      coin_basdroit1.y = coin_basdroit.y ;
++      coin_basdroit2.x = coin_basdroit.x ;
++      coin_basdroit2.y = coin_basdroit.y ;
++      generation_terrain(terrain,espace1,coin_hautgauche1,coin_basdroit1,min_side);
++      generation_terrain(terrain,espace2,coin_hautgauche2,coin_basdroit2,min_side);
++
++   }
++   else{
++      mur = (coin_basdroit.y - coin_hautgauche.y) / 2;
++      espace1.y = mur - 1 -coin_hautgauche.y;
++      espace2.y = mur - ((coin_basdroit.y - coin_hautgauche.y) % 2 ? 1 : 0) -coin_hautgauche.y ;
++      espace1.x = espace.x;
++      espace2.x = espace.x;
++      if(max_x_y(espace1) < min_side || max_x_y(espace2) < min_side) return;
++      for(i=coin_hautgauche.x;i<coin_basdroit.x+1 ;i++) terrain->terrain[mur][i].type = WALL;
++      ouverture = rand() % (coin_basdroit.x -coin_hautgauche.x -3)+coin_hautgauche.x;
++      for(i=ouverture;i<ouverture+3;i++) terrain->terrain[mur][i].type = FLOOR;
++      coin_hautgauche1.x = coin_hautgauche.x;
++      coin_hautgauche1.y = coin_hautgauche.y;
++      coin_hautgauche2.x = coin_hautgauche.x;
++      coin_hautgauche2.y = mur+1;
++      coin_basdroit1.x = coin_basdroit.x ;
++      coin_basdroit1.y = mur -1 ;
++      coin_basdroit2.x = coin_basdroit.x ; 
++      coin_basdroit2.y = coin_basdroit.y ;
++      generation_terrain(terrain,espace1,coin_hautgauche1,coin_basdroit1,min_side);
++      generation_terrain(terrain,espace2,coin_hautgauche2,coin_basdroit2,min_side);
++   }
++}
++
++
++void affiche_terrain_ASCII(Terrain terrain){
++   int i, y;
++   for (i = 0; i < terrain.taille.y; i++){
++      for (y = 0; y < terrain.taille.x; y++){
++         if (terrain.terrain[i][y].personnage) {
++            printf("P");
++            continue;
++         }
++         switch(terrain.terrain[i][y].type){
++            case WALL: printf("#");break;
++            case FLOOR: printf(" ");break;
++            case GUARDIAN: printf("G");break;
++            case RELIQUE: printf("R");break;
++            default: printf("E");
++         }
++      }
++      printf("\n");
++   }
++}
+diff --git a/src/terrain.o b/src/terrain.o
+new file mode 100644
+index 0000000..d1366a4
+Binary files /dev/null and b/src/terrain.o differ
